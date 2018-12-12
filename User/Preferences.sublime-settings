@@ -1,0 +1,16 @@
+{
+	"color_scheme": "Packages/Colorsublime - Themes/2112.tmTheme",
+	"draw_white_space": "all",
+	"email": "liuyaming1003@gmail.com",
+	"fade_fold_buttons": false,
+	"font_face": "Monaco",
+	"font_size": 24,
+	"highlight_line": true,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"theme": "Default.sublime-theme",
+	"translate_tabs_to_spaces": true,
+	"word_wrap": true
+}

@@ -1,0 +1,12 @@
+[
+	{
+		"id":"m-txt-rex",
+		"caption":"转换磨题帮txt",
+		"command":"m_txt_rex"
+	},
+    {
+        "id":"m-txt-csv",
+        "caption":"转换磨题帮csv",
+        "command":"m_txt_csv"
+    },
+]

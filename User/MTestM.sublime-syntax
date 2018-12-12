@@ -1,0 +1,91 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - txt
+first_line_match: 【标题】
+scope: source.c
+
+contexts:
+  # The prototype context is prepended to all contexts but those setting
+  # meta_include_prototype: false.
+  prototype:
+    - include: comments
+
+  main:
+    # The main context is the initial starting point of our syntax.
+    # Include other contexts from here (or specify them directly).
+    # - include: keywords
+    # - include: numbers
+    # - include: strings
+    - include: mtestm
+  mtestm:
+    #关键字
+    - match: '(【标题】|【描述】|【用时】|【材料开始】|【材料结束】|【材料】|【解析】|【简答题】|【答案开始】|【答案结束】|【正确答案】|【填空答案】)(\S+)'
+      scope: constant.language.c
+      captures:
+        1: constant.language.c
+        2: comment.block.c
+    # 答案 对错ABCD 填空答案
+    - match: '^(\d+)([\.、])(.*)(【正确答案】|【填空答案】)(\S+)'
+      # scope: constant.numeric.example-c
+      captures:
+        1: constant.language.c
+        2: meta.toc-list.banner.block.c
+        3: comment.block.c
+        4: constant.language.c
+        5: comment.block.c
+    #题号
+    # - match: '(^\d+)[、.](.+)'
+    #   captures:
+    #     1: keyword.control.example-c
+    #     2: constant.numeric.example-c
+    # #选择项
+    - match: '([A-E])([、.])(\S+)'
+      captures:
+        1: constant.language.c
+        2: meta.toc-list.banner.block.c
+        3: comment.block.c
+    #段落
+    - match: '(^[一二三四五六七八九十]{1,})、(\S+)'
+      captures:
+        1: constant.language.c
+        2: comment.block.c
+  keywords:
+    # Keywords are if, else for and while.
+    # Note that blackslashes don't need to be escaped within single quoted
+    # strings in YAML. When using single quoted strings, only single quotes
+    # need to be escaped: this is done by using two single quotes next to each
+    # other.
+    - match: '\b(if|else|for|while)\b'
+      scope: keyword.control.example-c
+
+  numbers:
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.example-c
+
+  strings:
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character.
+    - match: '"'
+      scope: punctuation.definition.string.begin.example-c
+      push: inside_string
+
+  inside_string:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.example-c
+    - match: '\.'
+      scope: constant.character.escape.example-c
+    - match: '"'
+      scope: punctuation.definition.string.end.example-c
+      pop: true
+
+  comments:
+    # Comments begin with a '//' and finish at the end of the line.
+    - match: '//'
+      scope: punctuation.definition.comment.example-c
+      push:
+        # This is an anonymous context push for brevity.
+        - meta_scope: comment.line.double-slash.example-c
+        - match: $\n?
+          pop: true

@@ -1,0 +1,61 @@
+/**
+ * ${1:描述}
+ * @Date    ${date}
+ * @Authors ${author} (${email})
+ * @Version ${version}
+ */
+
+<template>
+    <div>
+        <nav-header title="${3:标题}" />
+    </div>
+    <Container>
+
+    </Container>
+</template>
+
+<script type="text/javascript">
+    import NavHeader from '../../components/nav-header'
+    import Container from '../../components/container'
+    export default {
+        name: '${2:组件标识}',
+        components:{
+            NavHeader,
+            Container
+        },
+        //参数
+        props:{
+
+        },
+        data(){
+            return {
+
+            }
+        },
+        //创建之前
+        beforeCreate(){
+            //添加到缓存机制中
+            this.\$store.dispatch('pushKeepAlive', '$2')
+        },
+        //监听
+        watch:{
+
+        },
+        //计算
+        computed:{
+
+        },
+        //方法
+        methods:{
+
+        },
+        //使用缓存后显示调用
+        activated(){
+
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    
+</style>

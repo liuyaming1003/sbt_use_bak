@@ -1,0 +1,24 @@
+[
+  
+    {
+        "caption": "磨题帮工具",
+        "id": "mtestm-tools",
+        "children": [
+            {
+                "caption": "转换磨题帮txt",
+                "id": "m-txt-rex",
+                "command": "m_txt_rex"
+            },
+            {
+                "caption": "转换磨题帮csv",
+                "id": "m-txt-csv",
+                "command": "m_txt_csv"
+            },
+            {
+                "caption": "转换磨题帮xls",
+                "id": "m-csv-xls",
+                "command": "m_csv_xls"
+            },
+        ]
+    }
+]

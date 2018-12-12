@@ -1,0 +1,19 @@
+[
+  {
+    "id": "tools",
+    "children":[
+      {
+        "caption": "小程序转换",
+        "id": "wx-tools",
+        "children": [
+          {
+            "caption": "转支付宝",
+            "id": "wx-to-al",
+            "command": "wx_to_al"
+          }
+        ]
+      }
+    ]
+    
+  }
+]

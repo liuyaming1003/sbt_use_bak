@@ -1,0 +1,14 @@
+[
+	{
+        "keys": ["command+shift+m"], "command": "m_txt_rex",
+    },
+    {
+        "keys": ["command+shift+,"], "command": "m_txt_csv",
+    },
+    {
+        "keys": ["command+shift+."], "command": "m_csv_xls",
+    },
+    {
+        "keys": ["command+shift+n"], "command": "m_run_reg",  
+    }
+]

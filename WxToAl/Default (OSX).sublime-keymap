@@ -1,0 +1,5 @@
+[
+	{
+        "keys": ["command+shift+w"], "command": "wx_to_al",
+    }
+]
