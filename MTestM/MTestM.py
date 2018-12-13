@@ -96,10 +96,18 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         # replace(reg, '\1\2') 
 
         reg = r'(正确答案|答案)[：:]'
-        replace(reg, '【正确答案】')        
+        replace(reg, '【正确答案】')    
+
+        #将题号做对齐
+        reg = r'^\s+(\d+[、\.])'
+        replace(reg, r'\1') 
+
+        #将段落左对齐
+        reg = r'^\s+([一二三四五六七八九十]{1,}、)'
+        replace(reg, r'\1') 
 
         #修改选择项格式 (B-F)
-        reg = r'^\s*([^\d].*)((?:\n\s.*)*)[\(（]\s*([B-F])\s*[\)）]'
+        reg = r'^\s*([^\d].*)((?:\n\s*[^\d].*)*)[\(（]\s*([B-F])\s*[\)）]'
         replace(reg, r'\1\2 \3.')
 
         #单独处理 A
@@ -129,5 +137,8 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         reg = r'^\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*(?:[/√V]|正确|对)\s*[\)）](.*)'
         replace(reg, r'\1.\2\3【正确答案】对')
 
+        #清理选择项出现的 .. .、问题
+        reg = r'([A-F])[\.、]{2,}'
+        replace(reg, r'\1.')
 
     

@@ -21,36 +21,63 @@ contexts:
     - include: mtestm
   mtestm:
     #关键字
-    - match: '(【标题】|【描述】|【用时】|【材料开始】|【材料结束】|【材料】|【解析】|【简答题】|【答案开始】|【答案结束】|【正确答案】|【填空答案】)(\S+)'
+    - match: '(【标题】|【描述】|【用时】|【材料】|【解析】|【简答题】|【正确答案】|【填空答案】)'
       scope: constant.language.c
-      captures:
-        1: constant.language.c
-        2: comment.block.c
+      push:
+        - meta_scope: comment.block.c
+        - match: '\n'
+          pop: true
     # 答案 对错ABCD 填空答案
-    - match: '^(\d+)([\.、])(.*)(【正确答案】|【填空答案】)(\S+)'
-      # scope: constant.numeric.example-c
+    - match: '^(\d+)([\.、])'
       captures:
         1: constant.language.c
-        2: meta.toc-list.banner.block.c
-        3: comment.block.c
-        4: constant.language.c
-        5: comment.block.c
-    #题号
-    # - match: '(^\d+)[、.](.+)'
-    #   captures:
-    #     1: keyword.control.example-c
-    #     2: constant.numeric.example-c
-    # #选择项
-    - match: '([A-E])([、.])(\S+)'
+        2: keyword.operator.variadic.c
+      push: 
+        - meta_scope: comment.block.c
+        - match: '(【正确答案】|【填空答案】)\s*(\S+)'
+          captures:
+            1: constant.language.c
+            2: comment.block.c
+        - match: '\n'
+          pop: true
+    #选择项
+    - match: '([A-E])([、.])'
       captures:
         1: constant.language.c
-        2: meta.toc-list.banner.block.c
-        3: comment.block.c
+        2: keyword.operator.variadic.c
+      push: 
+        - meta_scope: comment.block.c
+        - match: '([A-E])([、.])'
+          captures:
+            1: constant.language.c
+            2: keyword.operator.variadic.c
+        - match: '\n'
+          pop: true
     #段落
-    - match: '(^[一二三四五六七八九十]{1,})、(\S+)'
+    - match: '(^[一二三四五六七八九十]{1,})(、)'
       captures:
         1: constant.language.c
-        2: comment.block.c
+        2: keyword.operator.variadic.c
+      push: 
+        - meta_scope: comment.block.c
+        - match: '\n'
+          pop: true
+    #匹配材料
+    - match: '【材料开始】'
+      scope: constant.language.c
+      push:
+        - meta_scope: comment.block.c
+        - match: '【材料结束】'
+          scope: constant.language.c
+          pop: true
+    # 匹配答案开始和结束
+    - match: '【答案开始】'
+      scope: constant.language.c
+      push:
+        - meta_scope: comment.block.c
+        - match: '【答案结束】'
+          scope: constant.language.c
+          pop: true
   keywords:
     # Keywords are if, else for and while.
     # Note that blackslashes don't need to be escaped within single quoted
