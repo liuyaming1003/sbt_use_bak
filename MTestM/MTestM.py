@@ -79,8 +79,14 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         
         def replace(reg, tmpl):
             #每次替换一次
+            prevRegion = sublime.Region(0,0)
             while True:
                 region = view.find(reg, 0)
+                if region.begin() == prevRegion.begin() and region.end() == prevRegion.end():
+                    print("问题正则 ---------", reg)
+                    print("问题字符串 ---------", regview.substr(region))
+                    break
+                prevRegion = region
                 if region.empty():
                     print("找不到", reg,region)
                     break
@@ -142,6 +148,10 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         replace(reg, r'\1.\2\3【正确答案】错')
         reg = r'^\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*(?:[/√V]|正确|对)\s*[\)）](.*)'
         replace(reg, r'\1.\2\3【正确答案】对')
+
+        #清除答案里面的空格
+        reg = r'(【正确答案】)\s+'
+        replace(reg, r'\1')
 
         #清理选择项出现的 .. .、问题
         reg = r'([A-F])[\.、]{2,}'
