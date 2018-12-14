@@ -89,7 +89,7 @@ class MRunRegCommand(sublime_plugin.TextCommand):
                 str = re.sub(reg, tmpl, str)
                 print("替换后 = ", str)
                 view.replace(edit, region, str)
-
+                # break
         
         #修正题目格式,题号没有[.、．]隔开
         # reg = r'^\s*(\d+)(\.*)'
@@ -115,13 +115,19 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         replace(reg, r'\1.')
 
         #将ABCDF选项左对齐
-        reg = r'^\s+([A-F][\.、])'
+        reg = r'^\s+([A-F])'
         replace(reg, r'\1')
         
         #替换选择项格式 A B C D 连在一起
         reg = r'([^\n\s])([B-F][、\.])'
         replace(reg, r'\1 \2')
 
+        #替换选择项与ABCDEF没有、.分割
+        reg = r'^([A-F])([^\.、])'
+        replace(reg, r'\1.\2')
+
+        reg = r'^([A-E].+[B-F])([^\.、])'
+        replace(reg, r'\1.\2')
 
         #去除选择 [A-E][、\.]后面的空格
         reg = r'([A-F][、\.])\s+'
