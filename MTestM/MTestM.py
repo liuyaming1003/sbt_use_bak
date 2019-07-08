@@ -101,28 +101,32 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         # reg = r'^\s*(\d+)(\.*)'
         # replace(reg, '\1\2') 
 
+        #替换前面空格
+        reg = r'^\s+'
+        replace(reg, '')    
+
         reg = r'(正确答案|答案)[：:]'
         replace(reg, '【正确答案】')    
 
         #将题号做对齐
-        reg = r'^\s+(\d+[、\.])'
-        replace(reg, r'\1') 
+        #reg = r'^\s+(\d+[、\.])'
+        #replace(reg, r'\1') 
 
         #将段落左对齐
-        reg = r'^\s+([一二三四五六七八九十]{1,}、)'
-        replace(reg, r'\1') 
+        #reg = r'^\s+([一二三四五六七八九十]{1,}、)'
+        #replace(reg, r'\1') 
 
         #修改选择项格式 (B-F)
         reg = r'^\s*([^\d].*)((?:\n\s*[^\d].*)*)[\(（]\s*([B-F])\s*[\)）]'
-        replace(reg, r'\1\2 \3.')
+        #replace(reg, r'\1\2 \3.')
 
         #单独处理 A
         reg = r'^\s*[\(（]\s*([A])\s*[\)）]'
         replace(reg, r'\1.')
 
         #将ABCDF选项左对齐
-        reg = r'^\s+([A-F])'
-        replace(reg, r'\1')
+        #reg = r'^\s+([A-F])'
+        #replace(reg, r'\1')
         
         #替换选择项格式 A B C D 连在一起
         reg = r'([^\n\s])([B-F][、\.])'
@@ -139,6 +143,26 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         reg = r'([A-F][、\.])\s+'
         replace(reg, r'\1')
         
+        #括号里面有答案为A B C D 或者  A、B、C、D、E、
+        reg = r'[\(（]\s*([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]*\s*[\)）]'
+        replace(reg, r'(\1\2\3\4\5)')
+        reg = r'[\(（]\s*([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]*\s*[\)）]'
+        replace(reg, r'(\1\2\3\4)')
+        reg = r'[\(（]\s*([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]*\s*[\)）]'
+        replace(reg, r'(\1\2\3)')
+        reg = r'[\(（]\s*([A-F])[\s、，,]([A-F])[\s、，,]*\s*[\)）]'
+        replace(reg, r'(\1\2)')
+
+        #正确答案里面的多选
+        reg = r'【正确答案】\s*([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]([A-F])'
+        replace(reg, r'【正确答案】\1\2\3\4\5')
+        reg = r'【正确答案】\s*([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]([A-F])'
+        replace(reg, r'【正确答案】\1\2\3\4')
+        reg = r'【正确答案】\s*([A-F])[\s、，,]([A-F])[\s、，,]([A-F])'
+        replace(reg, r'【正确答案】\1\2\3')
+        reg = r'【正确答案】\s*([A-F])[\s、，,]([A-F])'
+        replace(reg, r'【正确答案】\1\2')
+
         #正则字符串 替换选择项
         reg = r'^\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*([A-F]{1,})\s*[\)）](.*)\nA'
         replace(reg, r'\1.\2( )\4【正确答案】\3\nA')

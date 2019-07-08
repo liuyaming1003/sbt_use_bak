@@ -223,9 +223,17 @@ def handleQuestion(array):
     #print('array', array)
     str = ''
     for string in array:
+        #处理选择题选项里面的空格问题        
+        obj = re.match(r'^[A-F][、.]', string)
+        if obj : 
+            obj = re.search(r'\s+[A-F][、.]', string)
+            if obj: 
+                string = re.sub(r'(\s+[A-F][、.])', r'$\1', string)
+            string += '$'
+        
         str = str + ' ' +string
     str = re.sub('\n', r'', str)
-
+    #print('str', str)
     #处理填空题
     obj = re.search('^\s*\d+[、.](.*?)【填空答案】', str)
     if obj:
@@ -276,7 +284,7 @@ def handleQuestion(array):
         if obj:
             question['question'] = obj.group(1)
         #处理选项
-        obj = re.findall('\s+[A-F][、.]\s*(\S+)', str)
+        obj = re.findall('\s+[A-F][、.]\s*(.+?)\$', str)
         if len(obj) < 2:
             printError(str + '【选择项少于2个】')
         i = 0

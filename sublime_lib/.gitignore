@@ -1,0 +1,6 @@
+__pycache__
+docs/html/
+docs/source/modules/
+*.doctree
+*.pickle
+modules.rst

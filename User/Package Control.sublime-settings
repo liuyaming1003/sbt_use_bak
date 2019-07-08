@@ -1,5 +1,9 @@
 {
 	"bootstrapped": true,
+	"channels":
+	[
+		"/Users/liuym/Project/工作记录/channel_v3.json"
+	],
 	"in_process_packages":
 	[
 	],
@@ -7,6 +11,7 @@
 	[
 		"Colorsublime",
 		"DocBlockr",
+		"Jade",
 		"LESS",
 		"Package Control",
 		"PackageDev",
@@ -15,6 +20,7 @@
 		"Sublimerge 3",
 		"SublimeTmpl",
 		"Vue Syntax Highlight",
+		"Vuejs Complete Package",
 		"Vuejs Snippets"
 	]
 }
