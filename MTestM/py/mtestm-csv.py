@@ -83,7 +83,6 @@ def handleLines(lines):
     materialIsStart = False
     for line in lines:
         #print("line",line)
-        
         #获取标题
         obj = re.search('【标题】(.*)', line)
         if obj:
@@ -149,15 +148,15 @@ def handleLines(lines):
         #读取内容，以数字开始读到下一个数字开始
         obj = re.match('^\d+[、\.]', line)
         if obj :
+            #如果选择题、判断题还未处理需要优先处理
+            if len(questionArray) > 0 :
+                handleQuestion(questionArray)
+                questionArray = []
 
             #如果材料未处理需要处理材料
             if len(materialArray) > 0:
                 handleMaterial(materialArray)
                 materialArray = []
-            #如果选择题、判断题还未处理需要优先处理
-            if len(questionArray) > 0 :
-                handleQuestion(questionArray)
-                questionArray = []
         questionArray.append(line)
         #print(obj)
   
