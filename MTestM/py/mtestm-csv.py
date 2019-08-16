@@ -290,7 +290,7 @@ def handleQuestion(array):
         i = 0
         for choice in obj:
             print('choice', i, choice)
-            question['choices'][i] = choice
+            question['choices'][i] = choice.strip()
             i = i + 1
         #处理解析
         handleResolve(str, question)

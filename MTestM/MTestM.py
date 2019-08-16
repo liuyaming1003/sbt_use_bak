@@ -125,8 +125,12 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         reg = r'^\s+'
         replace(reg, '')    
 
-        reg = r'(正确答案|答案)[：:]'
-        replace(reg, '【正确答案】')    
+        reg = r'(正确答案|参考答案|答案)[：:]'
+        replace(reg, '【正确答案】')
+
+        #答案后面为 （ABCD） 
+        reg = r'【正确答案】\s*[\(（]([A-F]{1,})\s*[\)）]'
+        replace(reg, r'【正确答案】\1')
 
         #将题号做对齐
         #reg = r'^\s+(\d+[、\.])'
@@ -137,12 +141,12 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         #replace(reg, r'\1') 
 
         #修改选择项格式 (B-F)
-        reg = r'^\s*([^\d].*)((?:\n\s*[^\d].*)*)[\(（]\s*([B-F])\s*[\)）]'
+        reg = r'\n\s*([^\d].*)((?:\n\s*[^\d].*)*)[\(（]\s*([B-F])\s*[\)）]'
         #replace(reg, r'\1\2 \3.')
 
         #单独处理 A
-        reg = r'^\s*[\(（]\s*([A])\s*[\)）]'
-        replace(reg, r'\1.')
+        reg = r'\n\s*[\(（]\s*([A])\s*[\)）]'
+        replace(reg, r'\n\1.')
 
         #将ABCDF选项左对齐
         #reg = r'^\s+([A-F])'
@@ -153,11 +157,11 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         replace(reg, r'\1 \2')
 
         #替换选择项与ABCDEF没有、.分割
-        reg = r'^([A-F])([^\.、])'
-        replace(reg, r'\1.\2')
+        reg = r'\n([A-F])([^\.、])'
+        replace(reg, r'\n\1.\2')
 
-        reg = r'^([A-E].+[B-F])([^\.、])'
-        replace(reg, r'\1.\2')
+        reg = r'\n([A-E].+[B-F])([^\.、])'
+        replace(reg, r'\n\1.\2')
 
         #去除选择 [A-E][、\.]后面的空格
         reg = r'([A-F][、\.])\s+'
@@ -187,14 +191,14 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         replace(reg, r'【正确答案】\1\2')
 
         #正则字符串 替换选择项
-        reg = r'^\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*([A-F]{1,})\s*[\)）](.*)\nA'
-        replace(reg, r'\1.\2( )\4【正确答案】\3\nA')
+        reg = r'\n\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*([A-F]{1,})\s*[\)）](.*)\nA'
+        replace(reg, r'\n\1.\2( )\4【正确答案】\3\nA')
 
         #替换判断题
-        reg = r'^\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*(?:[×xX]|错误|错)\s*[\)）](.*)'
-        replace(reg, r'\1.\2\3【正确答案】错')
-        reg = r'^\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*(?:[/√V]|正确|对)\s*[\)）](.*)'
-        replace(reg, r'\1.\2\3【正确答案】对')
+        reg = r'\n\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*(?:[×xX]|错误|错)\s*[\)）](.*)'
+        replace(reg, r'\n\1.\2\3【正确答案】错')
+        reg = r'\n\s*(\d+)\s*[\.、]*\s*(.*)[\(（]\s*(?:[/√V]|正确|对)\s*[\)）](.*)'
+        replace(reg, r'\n\1.\2\3【正确答案】对')
 
         #清除答案里面的空格
         reg = r'(【正确答案】)\s+'
@@ -217,7 +221,7 @@ class MHtmlRegCommand(sublime_plugin.TextCommand):
         content = view.substr(viewRegion)
 
         #提取html里面的图片 
-        content = re.sub(r'<img.+(image\d+.jpg)[^>]+>', r'【题干】\1', content)
+        content = re.sub(r'<img[^>]+(image\d+.jpg)[^>]+>', r'【题干】\1', content)
 
         #替换掉html标签
         content = re.sub(r'<[^>]+>', r'', content)
