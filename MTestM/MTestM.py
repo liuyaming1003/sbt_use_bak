@@ -14,7 +14,7 @@ MTestMXls = None
 #支持 【标题】【描述】【用时】【材料开始】...【材料结束】【材料】【正确答案】【填空答案】【简答题】【解析】
 
 #将 txt 用正则替换成标准格式
-class MTxtRexCommand(sublime_plugin.TextCommand):
+class MTxtRegCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         global MTestMRex
         currentDir = os.path.join(sublime.packages_path(), "MTestM")
@@ -64,21 +64,41 @@ class MCsvXlsCommand(sublime_plugin.TextCommand):
 
 #执行一些正则，达到替换文本的作用
 class MRunRegCommand(sublime_plugin.TextCommand):
+    content = ""
     def run(self, edit):
+        global content
         #开始编辑文件
         view = self.view
 
+        #获取文本区域 
+        viewRegion = sublime.Region(0, view.size())
+        content = view.substr(viewRegion)
+
+        #替换掉全角字符
+        #替换．为.
+        content = re.sub('．', r'.', content)
+
+        #替换ＡＢＣＤ
+        content = re.sub('Ａ', r'A', content)
+        content = re.sub('Ｂ', r'B', content)
+        content = re.sub('Ｃ', r'C', content)
+        content = re.sub('Ｄ', r'D', content)
+        content = re.sub('Ｅ', r'E', content)
+        content = re.sub('Ｆ', r'F', content)
 
         #替换掉这个 
+        """
         reg = ['．','Ａ','Ｂ','Ｃ','Ｄ','Ｅ','Ｆ','Ｇ','Ｈ','Ｉ','Ｊ']
         replace = ['.','A','B','C','D','E','F','G','H','I','J']
         for index,value in enumerate(reg) :
             regions = view.find_all(value)
             for region in regions :
                 view.replace(edit, region, replace[index]) 
-        
+        """
         def replace(reg, tmpl):
-            #每次替换一次
+            global content
+            content = re.sub(reg, tmpl, content)
+            """
             prevRegion = sublime.Region(0,0)
             while True:
                 region = view.find(reg, 0)
@@ -96,7 +116,7 @@ class MRunRegCommand(sublime_plugin.TextCommand):
                 print("替换后 = ", str)
                 view.replace(edit, region, str)
                 # break
-        
+            """
         #修正题目格式,题号没有[.、．]隔开
         # reg = r'^\s*(\d+)(\.*)'
         # replace(reg, '\1\2') 
@@ -153,6 +173,9 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         reg = r'[\(（]\s*([A-F])[\s、，,]([A-F])[\s、，,]*\s*[\)）]'
         replace(reg, r'(\1\2)')
 
+        reg = r'正确答案[：:]\s*'
+        replace(reg, r'【正确答案】')
+
         #正确答案里面的多选
         reg = r'【正确答案】\s*([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]([A-F])[\s、，,]([A-F])'
         replace(reg, r'【正确答案】\1\2\3\4\5')
@@ -181,4 +204,29 @@ class MRunRegCommand(sublime_plugin.TextCommand):
         reg = r'([A-F])[\.、]{2,}'
         replace(reg, r'\1.')
 
-    
+        #替换掉文本内容
+        view.replace(edit, sublime.Region(0, view.size()), content)
+        
+#执行一些正则，达到替换文本的作用
+class MHtmlRegCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        #开始编辑文件
+        view = self.view    
+
+        viewRegion = sublime.Region(0, view.size())
+        content = view.substr(viewRegion)
+
+        #提取html里面的图片 
+        content = re.sub(r'<img.+(image\d+.jpg)[^>]+>', r'【题干】\1', content)
+
+        #替换掉html标签
+        content = re.sub(r'<[^>]+>', r'', content)
+
+        #替换掉换行加空行
+        content = re.sub(r'·*&nbsp;', r' ', content)
+
+        #替换掉换行符
+        content = re.sub(r'\n\s*', r'\n', content)
+
+        #替换掉文本内容
+        view.replace(edit, sublime.Region(0, view.size()), content)

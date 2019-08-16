@@ -1,6 +1,9 @@
 [
+    {
+        "keys": ["command+shift+b"], "command": "m_html_reg",
+    },
 	{
-        "keys": ["command+shift+m"], "command": "m_txt_rex",
+        "keys": ["command+shift+m"], "command": "m_txt_reg",
     },
     {
         "keys": ["command+shift+,"], "command": "m_txt_csv",

@@ -233,6 +233,7 @@ def handleQuestion(array):
         str = str + ' ' +string
     str = re.sub('\n', r'', str)
     #print('str', str)
+
     #处理填空题
     obj = re.search('^\s*\d+[、.](.*?)【填空答案】', str)
     if obj:
@@ -344,32 +345,33 @@ def writeCsv(filename):
         choices = questionObj['choices']
         answer = questionObj['answer']
         resolve = questionObj['resolve']
+        
+        #题干里面包含有多个题干，需要处理
+        questions = question.split('【题干】')
+        question = questions[0]
         if type == 0 :
             materials = questionObj['materials']
             writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
-            continue
-        if type == 1 :
+        elif type == 1 :
             #段落
             writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
-            continue
-        if type == 2 :
+        elif type == 2 :
             #选择题
             writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
-            continue
-        
-        if type == 3 :
+        elif type == 3 :
             #判断题
             writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
-            continue
-        if type == 4 :
+        elif type == 4 :
             #填空题
             writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
-            continue
-
-        if type == 5 :
+        elif type == 5 :
             #简答题
             writer.writerow([section] + materials + ['简答', no, question] + questionObj['choices'] + [answer, resolve])
-            continue
+
+        if len(questions) > 1 :
+            #需要再次写入题干
+            for question in questions[1:] :
+                writer.writerow([''] + materials + ['', no, question,'', '', '', '', '', '', '', ''])
 
     csvfile.close()
 

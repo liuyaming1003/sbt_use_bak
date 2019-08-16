@@ -7,9 +7,14 @@
         "id": "mtestm-tools",
         "children": [
           {
+              "caption": "转换磨题帮html",
+              "id": "m-html-rex",
+              "command": "m_html_reg"
+          },
+          {
             "caption": "转换磨题帮txt",
-            "id": "m-txt-rex",
-            "command": "m_txt_rex"
+            "id": "m-txt-reg",
+            "command": "m_txt_reg"
           },
           {
             "caption": "转换磨题帮csv",
