@@ -206,7 +206,7 @@ class MRunRegCommand(sublime_plugin.TextCommand):
 
         #替换掉文本内容
         view.replace(edit, sublime.Region(0, view.size()), content)
-        
+
 #执行一些正则，达到替换文本的作用
 class MHtmlRegCommand(sublime_plugin.TextCommand):
     def run(self, edit):

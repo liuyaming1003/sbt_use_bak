@@ -343,7 +343,7 @@ def writeCsv(filename):
         question = questionObj['question'] 
         materials = materialNoneArray 
         choices = questionObj['choices']
-        answer = questionObj['answer']
+        answer = questionObj['answer'].strip()
         resolve = questionObj['resolve']
         
         #题干里面包含有多个题干，需要处理
@@ -371,7 +371,7 @@ def writeCsv(filename):
         if len(questions) > 1 :
             #需要再次写入题干
             for question in questions[1:] :
-                writer.writerow([''] + materials + ['', no, question,'', '', '', '', '', '', '', ''])
+                writer.writerow([''] + materials + ['', no, question.strip(),'', '', '', '', '', '', '', ''])
 
     csvfile.close()
 
