@@ -203,18 +203,21 @@ def handleMaterial(array):
 
     #print("array", len(array), array)
 
-#统一处理解析
+#统一处理解析,多个解析一起处理
 def handleResolve(str, question):
     #处理解析
-    obj = re.findall('【解析】(\S+)', str)
-    i = 0
-    for resolve in obj:
-        #print(resolve)
-        if i == 0 :
-            question['resolve'] = resolve
-        else :
-            question['resolve'] = question['resolve'] + '\n' + resolve
-        i = i + 1
+    obj = re.findall('【解析】(.+)', str)
+    if obj and len(obj) > 0 :
+        #print('【解析】' + obj[0])
+        i = 0
+        obj = obj[0].split('【解析】')
+        for resolve in obj:
+            
+            if i == 0 :
+                question['resolve'] = resolve.strip()
+            else :
+                question['resolve'] = question['resolve'] + '\n' + resolve.strip()
+            i = i + 1
 
 #处理填空题 简答题 选择题 判断题
 def handleQuestion(array):
@@ -241,16 +244,18 @@ def handleQuestion(array):
         question = initQuestion(4, questionNo)
         question['question'] = obj.group(1)
         #question['answer'] = obj.group(2)   
-        obj = re.findall('【填空答案】\s*(\S+)\s*', str)
+        obj = re.findall('【填空答案】\s*(.+)', str)
         
         if len(obj) > 0:
+            #print('【填空答案】' + obj[0])
+            obj = obj[0].split('【填空答案】')
             answer = ''
             i = 0
             for item in obj:
                 if i == 0:
-                    answer = item
+                    answer = item.strip()
                 else:
-                    answer = answer + '\n' + item
+                    answer = answer + '\n' + item.strip()
                 i = i + 1
             question['answer'] = answer
             handleResolve(str, question)

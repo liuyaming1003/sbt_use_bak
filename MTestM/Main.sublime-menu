@@ -27,6 +27,11 @@
             "command": "m_csv_xls"
           },
           {
+            "caption": "压缩zip格式",
+            "id": "m-zip-xls",
+            "command": "m_zip_xls"
+          },
+          {
             "caption": "执行替换正则",
             "id": "m-run-reg",
             "command": "m_run_reg"

@@ -1,6 +1,6 @@
 import sublime, sublime_plugin
 
-import imp,os,re
+import imp,os,re,zipfile
 
 
 MTestMRex = None
@@ -61,6 +61,27 @@ class MCsvXlsCommand(sublime_plugin.TextCommand):
         errorView = self.view.window().new_file()
         errorView.insert(edit, 0, MTestMXls.getError())
 
+class MZipXlsCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        #获取文件名称
+        file = self.view.file_name()
+        
+        #zip文件
+        zipfilename = os.path.splitext(file)[0] + ".zip"
+        zipf = zipfile.ZipFile(zipfilename,'w',zipfile.ZIP_DEFLATED)
+        #遍历目录下的文件，然后压缩
+        print ("文件目录", os.path.dirname(file))
+        dir = os.path.dirname(file)
+        for root,dirs,files in os.walk(dir):
+            for file in files:
+                #判断文件后缀是否为xls或者png
+                splitext = os.path.splitext(file)[1]
+                if splitext  == '.xls' or splitext == '.png':
+                    #获取文件路径
+                    print(os.path.join(root,file))
+                    #写入到zip文件中
+                    zipf.write(os.path.join(root,file))
+        zipf.close()
 
 #执行一些正则，达到替换文本的作用
 class MRunRegCommand(sublime_plugin.TextCommand):
