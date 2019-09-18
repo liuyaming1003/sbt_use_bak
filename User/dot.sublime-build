@@ -1,0 +1,5 @@
+{
+    "cmd": ["dot", "$file", "-T", "png", "-o", "$file_base_name.png"],
+    "working_dir": "${project_path:${folder}}",
+    "selector": "*.dot"
+}

@@ -7,7 +7,12 @@ Package\ Control.ca-certs/
 encoding_cache.json
 .DS_Store
 WxToAl/
-User/
+User/*
+!User/mtestm/
+!User/MTestM.sublime-syntax
+!User/node.sublime-build
+!User/dot.sublime-build
+!User/Graphvizer.sublime-settings
 typing/
 Theme\ -\ Default/
 Sublimerge\ 3/
