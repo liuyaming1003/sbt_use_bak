@@ -20,3 +20,4 @@ sublime_lib/
 pathlib/
 enum/
 Colorsubline\ -\ Themes/
+.logs/
