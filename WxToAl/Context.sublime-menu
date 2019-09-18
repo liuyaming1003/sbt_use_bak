@@ -1,7 +1,0 @@
-[
-	{
-		"id":"wx-to-al",
-		"caption":"转支付宝",
-		"command":"wx_to_al"
-	}
-]
