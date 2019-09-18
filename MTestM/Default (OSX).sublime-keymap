@@ -13,5 +13,8 @@
     },
     {
         "keys": ["command+shift+n"], "command": "m_run_reg",  
+    },
+    {
+        "keys": ["command+shift+alt+z"], "command": "m_zip_xls",  
     }
 ]

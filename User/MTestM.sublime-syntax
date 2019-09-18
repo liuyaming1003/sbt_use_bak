@@ -22,7 +22,7 @@ contexts:
     - include: choices
   mtestm:
     #关键字
-    - match: '(【标题】|【描述】|【用时】|【材料】|【解析】|【简答题】|【正确答案】|【填空答案】)'
+    - match: '(【标题】|【描述】|【用时】|【材料】|【解析】|【简答题】|【正确答案】|【填空答案】|【题干】)'
       scope: constant.language.c
       push:
         - meta_scope: comment.block.c
@@ -33,7 +33,7 @@ contexts:
       captures:
         1: constant.language.c
         2: keyword.operator.variadic.c
-      push: 
+      push:
         - match: '(.+)(【正确答案】|【填空答案】)\s*(\S+)'
           captures:
             1: comment.block.c
@@ -41,7 +41,7 @@ contexts:
             3: comment.block.c
         - match: '\n'
           pop: true
-    
+
     - match: '^([A-E][^、.])'
       captures:
         1: string.quoted.double.example-c
@@ -56,7 +56,7 @@ contexts:
       captures:
         1: constant.language.c
         2: keyword.operator.variadic.c
-      push: 
+      push:
         - meta_scope: comment.block.c
         - clear_scopes: true
         - match: '\n'
@@ -83,7 +83,7 @@ contexts:
       captures:
         1: constant.language.c
         2: keyword.operator.variadic.c
-      push: 
+      push:
         - meta_scope: comment.block.c
         - match: '([A-E])([、.])'
           captures:

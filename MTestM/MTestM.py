@@ -76,11 +76,11 @@ class MZipXlsCommand(sublime_plugin.TextCommand):
             for file in files:
                 #判断文件后缀是否为xls或者png
                 splitext = os.path.splitext(file)[1]
-                if splitext  == '.xls' or splitext == '.png':
+                if splitext  == '.xls' or splitext == '.png' or splitext == '.jpg':
                     #获取文件路径
                     print(os.path.join(root,file))
                     #写入到zip文件中
-                    zipf.write(os.path.join(root,file))
+                    zipf.write(os.path.join(root,file),file)
         zipf.close()
 
 #执行一些正则，达到替换文本的作用
@@ -242,7 +242,7 @@ class MHtmlRegCommand(sublime_plugin.TextCommand):
         content = view.substr(viewRegion)
 
         #提取html里面的图片 
-        content = re.sub(r'<img[^>]+(image\d+.jpg)[^>]+>', r'【题干】\1', content)
+        content = re.sub(r'<img[^>]+(image\d+.jpg|image\d+.png)[^>]+>', r'【题干】\1', content)
 
         #替换掉html标签
         content = re.sub(r'<[^>]+>', r'', content)

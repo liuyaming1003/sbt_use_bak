@@ -1,8 +1,17 @@
-Package Control.last-run
-Package Control.ca-list
-Package Control.ca-bundle
-Package Control.system-ca-bundle
-Package Control.cache/
-Package Control.ca-certs/
+Package\ Control.last-run
+Package\ Control.ca-list
+Package\ Control.ca-bundle
+Package\ Control.system-ca-bundle
+Package\ Control.cache/
+Package\ Control.ca-certs/
 encoding_cache.json
 .DS_Store
+WxToAl/
+User/
+typing/
+Theme\ -\ Default/
+Sublimerge\ 3/
+sublime_lib/
+pathlib/
+enum/
+Colorsubline\ -\ Themes/
