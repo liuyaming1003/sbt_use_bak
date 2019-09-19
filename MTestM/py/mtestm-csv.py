@@ -10,6 +10,7 @@ questionArray = [] #一道题目数组
 mtestmArray = []  #试卷数组
 
 materialCount = 1 # 方便支持多个材料
+materialEnd = False #材料题目是否出现结束
 questionNo = 1 #题号
 mtestmTitle = ''
 mtestmDesc = ''
@@ -79,10 +80,10 @@ def printError(string):
 #    w_file.close()
 
 def handleLines(lines):
-    global questionArray,materialArray,mtestmTitle,mtestmDesc,mtestmTime,materialMultiLineArray
+    global questionArray,materialArray,mtestmTitle,mtestmDesc,mtestmTime,materialMultiLineArray,materialEnd
     materialIsStart = False
     for line in lines:
-        #print("line",line)
+        print("line",line)
         #获取标题
         obj = re.search('【标题】(.*)', line)
         if obj:
@@ -118,6 +119,11 @@ def handleLines(lines):
             materialMultiLineArray.append(line)
             continue
 
+        #添加材料题结束标记
+        obj = re.search('【材料题目结束】', line)
+        if obj:
+            materialEnd = True
+            continue
         #处理材料
         obj = re.search('【材料】(.*)\n*', line)
         #print(obj)
@@ -137,6 +143,12 @@ def handleLines(lines):
             if len(questionArray) > 0 :
                 handleQuestion(questionArray)
                 questionArray = []
+            #加入材料结束标志
+            if materialEnd == True:
+                materialEnd = False
+                question = initQuestion(6, '')
+                mtestmArray.append(question)
+                print("加入材料结束标志")
             #是段落
             question = initQuestion(1, '')
             question["section"] = obj.group(1)
@@ -157,15 +169,27 @@ def handleLines(lines):
             if len(materialArray) > 0:
                 handleMaterial(materialArray)
                 materialArray = []
+            #加入材料结束标志
+            if materialEnd == True:
+                materialEnd = False
+                question = initQuestion(6, '')
+                mtestmArray.append(question)
+
         questionArray.append(line)
         #print(obj)
   
+    #加入材料结束标志
+    if materialEnd == True:
+        materialEnd = False
+        question = initQuestion(6, '')
+        mtestmArray.append(question)
+
     #处理最后一题
     if len(questionArray) > 0:
         handleQuestion(questionArray)    
 
 def initQuestion(type, no):
-    #type 类型 0 材料 1 段落 2 选择题 3 判断题 4 填空题 5 简答题
+    #type 类型 0 材料 1 段落 2 选择题 3 判断题 4 填空题 5 简答题 6 材料题结束，xls空一行
     #
 
     question = {
@@ -253,9 +277,9 @@ def handleQuestion(array):
             i = 0
             for item in obj:
                 if i == 0:
-                    answer = item.strip()
+                    answer = item.strip().split("【解析】")[0]
                 else:
-                    answer = answer + '\n' + item.strip()
+                    answer = answer + '\n' + item.strip().split("【解析】")[0]
                 i = i + 1
             question['answer'] = answer
             handleResolve(str, question)
@@ -372,7 +396,9 @@ def writeCsv(filename):
         elif type == 5 :
             #简答题
             writer.writerow([section] + materials + ['简答', no, question] + questionObj['choices'] + [answer, resolve])
-
+        elif type == 6 :
+            #材料题结束，空一行
+            writer.writerow([''] + materials + ['', '', '','', '', '', '', '', '', '', ''])
         if len(questions) > 1 :
             #需要再次写入题干
             for question in questions[1:] :

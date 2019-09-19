@@ -22,7 +22,7 @@ contexts:
     - include: choices
   mtestm:
     #关键字
-    - match: '(【标题】|【描述】|【用时】|【材料】|【解析】|【简答题】|【正确答案】|【填空答案】|【题干】)'
+    - match: '(【标题】|【描述】|【用时】|【材料】|【解析】|【简答题】|【正确答案】|【填空答案】|【题干】|【材料题目结束】)'
       scope: constant.language.c
       push:
         - meta_scope: comment.block.c
@@ -34,7 +34,7 @@ contexts:
         1: constant.language.c
         2: keyword.operator.variadic.c
       push:
-        - match: '(.+)(【正确答案】|【填空答案】)\s*(\S+)'
+        - match: '(.+?)(【正确答案】|【填空答案】)\s*(\S+)'
           captures:
             1: comment.block.c
             2: constant.language.c
