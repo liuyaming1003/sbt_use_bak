@@ -392,7 +392,7 @@ def writeCsv(filename):
         resolveArray.append('解析')
         resolveNoneArray.append('')
 
-    writer.writerow(['段落'] + materialArray + ['题型', '题号', '题干','选择项1', '选择项2', '选择项3', '选择项4', '选择项5', '选择项6', '答案'] +  resolveArray)
+    writer.writerow(['段落'] + materialArray + ['题型', '题号', '题干','选择项1', '选择项2', '选择项3', '选择项4', '选择项5', '选择项6', '答案'] +  resolveArray + ['得分'])
 
     for questionObj in mtestmArray:
         type = questionObj['type']
