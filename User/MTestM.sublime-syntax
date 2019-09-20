@@ -22,7 +22,7 @@ contexts:
     - include: choices
   mtestm:
     #关键字
-    - match: '(【标题】|【描述】|【用时】|【材料】|【解析】|【简答题】|【正确答案】|【填空答案】|【题干】|【材料题目结束】)'
+    - match: '(【标题】|【描述】|【用时】|【材料】|【解析】|【简答题】|【正确答案】|【填空答案】|【题干】|【材料题目结束】|【得分】)'
       scope: constant.language.c
       push:
         - meta_scope: comment.block.c

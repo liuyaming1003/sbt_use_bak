@@ -10,6 +10,7 @@ questionArray = [] #一道题目数组
 mtestmArray = []  #试卷数组
 
 materialCount = 1 # 方便支持多个材料
+resolveCount = 1 #解析默认个数
 materialEnd = False #材料题目是否出现结束
 questionNo = 1 #题号
 mtestmTitle = ''
@@ -17,10 +18,10 @@ mtestmDesc = ''
 mtestmTime = ''
 materialArray = [] #材料数组
 materialMultiLineArray = [] #处理材料开始和材料结束间的内容
-
+mtestmScore = '' #设置得分
 def init(file, encoding='utf-8'):
     global fileencoding,error
-    global questionNo,mtestmArray,materialCount,questionArray,materialArray,mtestmTitle,mtestmDesc,mtestmTime,materialMultiLineArray
+    global questionNo,mtestmArray,materialCount,questionArray,materialArray,mtestmTitle,mtestmDesc,mtestmTime,materialMultiLineArray,resolveCount
     if len(encoding) > 0:
         fileencoding = encoding
 
@@ -34,6 +35,7 @@ def init(file, encoding='utf-8'):
     mtestmArray = []  #试卷数组
 
     materialCount = 1 # 方便支持多个材料
+    resolveCount = 1 #解析默认个数
     questionNo = 1 #题号
     mtestmTitle = ''
     mtestmDesc = ''
@@ -80,10 +82,10 @@ def printError(string):
 #    w_file.close()
 
 def handleLines(lines):
-    global questionArray,materialArray,mtestmTitle,mtestmDesc,mtestmTime,materialMultiLineArray,materialEnd
+    global questionArray,materialArray,mtestmTitle,mtestmDesc,mtestmTime,materialMultiLineArray,materialEnd,mtestmScore
     materialIsStart = False
     for line in lines:
-        print("line",line)
+        #print("line",line)
         #获取标题
         obj = re.search('【标题】(.*)', line)
         if obj:
@@ -99,6 +101,11 @@ def handleLines(lines):
         obj = re.search('【用时】(.*)', line)
         if obj:
             mtestmTime = obj.group(1)
+            continue
+
+        obj = re.search('【得分】\s*(\d+)', line)
+        if obj:
+            mtestmScore = obj.group(1)
             continue
 
         #多行材料处理 需要 【M材料开始】。。。【M材料结束】
@@ -148,7 +155,7 @@ def handleLines(lines):
                 materialEnd = False
                 question = initQuestion(6, '')
                 mtestmArray.append(question)
-                print("加入材料结束标志")
+                #print("加入材料结束标志")
             #是段落
             question = initQuestion(1, '')
             question["section"] = obj.group(1)
@@ -191,7 +198,11 @@ def handleLines(lines):
 def initQuestion(type, no):
     #type 类型 0 材料 1 段落 2 选择题 3 判断题 4 填空题 5 简答题 6 材料题结束，xls空一行
     #
+    global mtestmScore
+    score = ''
 
+    if type == 2 or type == 3 or type == 4:
+        score = mtestmScore
     question = {
         "type": type,           #题目类型
         "section":"",        #段落
@@ -200,8 +211,9 @@ def initQuestion(type, no):
         "materials":[],      #材料
         "choices":['', '', '', '', '', ''],         #选择项
         "answer":"",         #答案
-        "resolve":"",       #解析
+        "resolves":[],       #解析
         "no":no,              #题号
+        "score":score,           #得分支持
     }
     return question
 
@@ -229,6 +241,7 @@ def handleMaterial(array):
 
 #统一处理解析,多个解析一起处理
 def handleResolve(str, question):
+    global resolveCount
     #处理解析
     obj = re.findall('【解析】(.+)', str)
     if obj and len(obj) > 0 :
@@ -236,12 +249,22 @@ def handleResolve(str, question):
         i = 0
         obj = obj[0].split('【解析】')
         for resolve in obj:
-            
+            #判断解析里面是否含有图片，有的话需要另去一行
+            resolve = resolve.strip()
             if i == 0 :
-                question['resolve'] = resolve.strip()
+                question['resolves'].append(resolve)
             else :
-                question['resolve'] = question['resolve'] + '\n' + resolve.strip()
+                #判断后缀是否以多媒体格式结束
+                if resolve.endswith(('.jpg','.png')) :
+                    question['resolves'].append(resolve)
+                else:
+                    size = len(question['resolves'])
+                    question['resolves'][size -1] = question['resolves'][size -1] + '\n' + resolve
+                    #print("resolves" + question['resolves'][size -1])
             i = i + 1
+
+    if len(question['resolves']) > resolveCount :
+        resolveCount = len(question['resolves'])
 
 #处理填空题 简答题 选择题 判断题
 def handleQuestion(array):
@@ -363,7 +386,13 @@ def writeCsv(filename):
         materialArray.append('材料')
         materialNoneArray.append('')
 
-    writer.writerow(['段落'] + materialArray + ['题型', '题号', '题干','选择项1', '选择项2', '选择项3', '选择项4', '选择项5', '选择项6', '答案', '解析'])
+    resolveArray = []
+    resolveNoneArray = []
+    for i in range(resolveCount) :
+        resolveArray.append('解析')
+        resolveNoneArray.append('')
+
+    writer.writerow(['段落'] + materialArray + ['题型', '题号', '题干','选择项1', '选择项2', '选择项3', '选择项4', '选择项5', '选择项6', '答案'] +  resolveArray)
 
     for questionObj in mtestmArray:
         type = questionObj['type']
@@ -373,36 +402,40 @@ def writeCsv(filename):
         materials = materialNoneArray 
         choices = questionObj['choices']
         answer = questionObj['answer'].strip()
-        resolve = questionObj['resolve']
-        
+        resolves = questionObj['resolves']
+        score = questionObj['score']
+        for i in range(resolveCount) :
+            if i >= len(resolves): 
+                resolves.append('')
+
         #题干里面包含有多个题干，需要处理
         questions = question.split('【题干】')
         question = questions[0]
         if type == 0 :
             materials = questionObj['materials']
-            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
+            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer]  + resolves)
         elif type == 1 :
             #段落
-            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
+            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer]  + resolves)
         elif type == 2 :
             #选择题
-            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
+            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer]  + resolves + [score])
         elif type == 3 :
             #判断题
-            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
+            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer]  + resolves + [score])
         elif type == 4 :
             #填空题
-            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer, resolve])
+            writer.writerow([section] + materials + ['', no, question] + questionObj['choices'] + [answer]  + resolves + [score])
         elif type == 5 :
             #简答题
-            writer.writerow([section] + materials + ['简答', no, question] + questionObj['choices'] + [answer, resolve])
+            writer.writerow([section] + materials + ['简答', no, question] + questionObj['choices'] + [answer]  + resolves)
         elif type == 6 :
             #材料题结束，空一行
-            writer.writerow([''] + materials + ['', '', '','', '', '', '', '', '', '', ''])
+            writer.writerow([''] + materials + ['', '', '','', '', '', '', '', '', '']  + resolves)
         if len(questions) > 1 :
             #需要再次写入题干
             for question in questions[1:] :
-                writer.writerow([''] + materials + ['', no, question.strip(),'', '', '', '', '', '', '', ''])
+                writer.writerow([''] + materials + ['', no, question.strip(),'', '', '', '', '', '', '']  + resolves)
 
     csvfile.close()
 
