@@ -46,7 +46,7 @@ contexts:
       captures:
         1: string.quoted.double.example-c
       push:
-        - clear_scopes: true
+      #  - clear_scopes: true
         - meta_content_scope: string.quoted.double.example-c
         - match: '\n'
           pop: true
@@ -58,7 +58,7 @@ contexts:
         2: keyword.operator.variadic.c
       push:
         - meta_scope: comment.block.c
-        - clear_scopes: true
+      #  - clear_scopes: true
         - match: '\n'
           pop: true
     #匹配材料
@@ -96,7 +96,7 @@ contexts:
             - meta_scope: string.quoted.double.example-c
             - match: '\n'
               pop: true
-        - clear_scopes: true
+      #  - clear_scopes: true
         - match: '\n'
           pop: true
   keywords:
