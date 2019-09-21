@@ -36,12 +36,14 @@ def init(file, encoding='utf-8'):
 
     materialCount = 1 # 方便支持多个材料
     resolveCount = 1 #解析默认个数
+    materialEnd = False
     questionNo = 1 #题号
     mtestmTitle = ''
     mtestmDesc = ''
     mtestmTime = ''
     materialArray = [] #材料数组
     materialMultiLineArray = [] #处理材料开始和材料结束间的内容
+    mtestmScore = '' #设置得分
     #读取word txt 试卷，只能处理选择题文件
     f = open(file, "r", encoding=fileencoding)
     lines = f.readlines()
